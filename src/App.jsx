@@ -804,6 +804,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [exporting, setExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleExport = async () => {
     setExporting(true);
@@ -853,14 +854,28 @@ export default function App() {
 
   return (
     <div className="app-layout">
+      {/* SIDEBAR BACKDROP FOR MOBILE */}
+      <div
+        className={`sidebar-backdrop ${sidebarOpen ? 'visible' : ''}`}
+        onClick={() => setSidebarOpen(false)}
+        aria-hidden="true"
+      />
+
       {/* SIDEBAR */}
-      <aside className="sidebar">
+      <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
           <img src="/imagen.png" alt="ONTA" />
           <div className="sidebar-logo-text">
             <h2>ONTA Perú 2026</h2>
             <span>56ª Reunión Anual</span>
           </div>
+          <button
+            className="sidebar-close-btn"
+            onClick={() => setSidebarOpen(false)}
+            aria-label="Cerrar menú"
+          >
+            <i className="bi bi-x-lg" />
+          </button>
         </div>
         <nav className="sidebar-nav">
           {groups.map(group => (
@@ -870,23 +885,24 @@ export default function App() {
                 <button
                   key={page.id}
                   className={`nav-item ${activePage === page.id ? 'active' : ''}`}
-                  onClick={() => setActivePage(page.id)}
+                  onClick={() => {
+                    setActivePage(page.id);
+                    setSidebarOpen(false);
+                  }}
                 >
                   <i className={`nav-icon ${page.icon}`}></i>
-                  {page.label}
+                  <span>{page.label}</span>
                 </button>
               ))}
             </div>
           ))}
         </nav>
         {/* Mascota ONTA */}
-        <div style={{ padding: '0 1rem', textAlign: 'center' }}>
+        <div className="sidebar-mascot">
           <img
             src="/mascota.png"
             alt="Mascota ONTA"
-            style={{ width: '100%', maxWidth: 180, opacity: 0.92, filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.4))', transition: 'transform 0.3s ease' }}
-            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04) translateY(-4px)'}
-            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+            className="mascot-img"
           />
         </div>
         <div className="sidebar-footer">
@@ -898,39 +914,46 @@ export default function App() {
       {/* MAIN */}
       <div className="main-content">
         <div className="topbar">
-          <h1>{PAGE_TITLES[activePage]}</h1>
-          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <div className="topbar-left">
+            <button
+              className="menu-toggle-btn"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label="Abrir o cerrar menú de navegación"
+            >
+              <i className="bi bi-list" />
+            </button>
+            <div className="topbar-title-wrap">
+              <h1>{PAGE_TITLES[activePage]}</h1>
+              <div className="topbar-badge topbar-badge-mobile">
+                <i className="bi bi-circle-fill dot-pulse" />
+                En vivo
+              </div>
+            </div>
+          </div>
+
+          <div className="topbar-right">
             <Countdown />
             <button
               onClick={handleExport}
               disabled={exporting}
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.5rem',
-                padding: '0.45rem 1.1rem',
-                background: exporting ? '#fee2e2' : 'linear-gradient(135deg, #dc2626, #b91c1c)',
-                color: exporting ? '#dc2626' : '#ffffff',
-                border: '1px solid #fecaca',
-                borderRadius: 10, cursor: exporting ? 'not-allowed' : 'pointer',
-                fontFamily: 'Outfit', fontWeight: 700, fontSize: '0.85rem',
-                boxShadow: exporting ? 'none' : '0 2px 8px rgba(220,38,38,0.3)',
-                transition: 'all 0.2s',
-                minWidth: 160,
-                justifyContent: 'center',
-              }}
+              className="btn-export-pdf"
             >
               {exporting ? (
                 <>
-                  <i className="bi bi-hourglass-split" style={{ animation: 'spin 1s linear infinite' }} />
-                  Generando... {exportProgress}%
+                  <i className="bi bi-hourglass-split spin" />
+                  <span>{exportProgress}%</span>
                 </>
               ) : (
                 <>
                   <i className="bi bi-file-earmark-pdf-fill" />
-                  Exportar PDF
+                  <span>Exportar PDF</span>
                 </>
               )}
             </button>
-            <div className="topbar-badge"><i className="bi bi-circle-fill" style={{fontSize:'0.55rem', color:'#ef4444', marginRight:'0.4rem', verticalAlign:'middle'}}></i>En vivo · ONTA 2026</div>
+            <div className="topbar-badge topbar-badge-desktop">
+              <i className="bi bi-circle-fill dot-pulse" />
+              En vivo · ONTA 2026
+            </div>
           </div>
         </div>
 

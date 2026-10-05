@@ -28,21 +28,16 @@ export default function Countdown() {
   }, []);
 
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: '0.5rem',
-      background: '#fef2f2', border: '1px solid #fecaca',
-      padding: '0.35rem 1rem', borderRadius: 999,
-      fontSize: '0.82rem', fontWeight: 700, color: '#b91c1c',
-    }}>
-      <i className="bi bi-clock-fill" style={{ color: '#ef4444', fontSize: '0.8rem' }} />
-      <span style={{ color: '#6b7280', fontWeight: 500 }}>Congreso en:</span>
-      <span style={{ color: '#dc2626' }}>{time.days}d</span>
-      <span style={{ color: '#9ca3af' }}>:</span>
-      <span style={{ color: '#dc2626' }}>{pad(time.hours)}h</span>
-      <span style={{ color: '#9ca3af' }}>:</span>
-      <span style={{ color: '#dc2626' }}>{pad(time.minutes)}m</span>
-      <span style={{ color: '#9ca3af' }}>:</span>
-      <span style={{ color: '#dc2626', fontFamily: 'monospace', fontSize: '0.9rem' }}>{pad(time.seconds)}s</span>
+    <div className="countdown-pill">
+      <i className="bi bi-clock-fill countdown-icon" />
+      <span className="countdown-label">Congreso en:</span>
+      <span className="countdown-unit">{time.days}d</span>
+      <span className="countdown-sep">:</span>
+      <span className="countdown-unit">{pad(time.hours)}h</span>
+      <span className="countdown-sep">:</span>
+      <span className="countdown-unit">{pad(time.minutes)}m</span>
+      <span className="countdown-sep">:</span>
+      <span className="countdown-unit countdown-sec">{pad(time.seconds)}s</span>
     </div>
   );
 }
